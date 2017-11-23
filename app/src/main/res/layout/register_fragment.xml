@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/bootstrap_brand_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="360dp"
+        android:background="#65edecec"
+        android:gravity="center"
+        android:layout_marginTop="33dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_Name_Regis"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:drawableLeft="@drawable/ic_user"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:background="#a4edecec"
+            android:hint=" Name"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/et_Email_Regis"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:drawableLeft="@drawable/ic_user"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:background="#a4edecec"
+            android:hint=" Username"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/et_Password_regis"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:drawableLeft="@drawable/ic_password"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:background="#a4edecec"
+            android:hint=" Password"
+            android:inputType="textPassword" />
+        <EditText
+            android:id="@+id/et_Confirm_Password"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:drawableLeft="@drawable/ic_password"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:background="#a4edecec"
+            android:hint=" Confrim Password"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/btnRegisterToFirebase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/bootstrap_brand_warning"
+            android:text="@string/btn_register"
+            android:textColor="@color/bootstrap_brand_secondary_fill" />
+
+    </LinearLayout>
+
+</LinearLayout>

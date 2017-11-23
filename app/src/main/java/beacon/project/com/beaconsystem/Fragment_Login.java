@@ -2,14 +2,17 @@ package beacon.project.com.beaconsystem;
 
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,10 +21,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import beacon.project.com.beaconsystem.R;
-
-
-
 @SuppressLint("ValidFragment")
 class Fragment_Login extends Fragment implements View.OnClickListener{
     private EditText user,pass;
@@ -29,6 +28,7 @@ class Fragment_Login extends Fragment implements View.OnClickListener{
     Context context;
     FirebaseAuth mAuthen;
     boolean state = false;
+    private ProgressDialog progressDialog;
 
     public Fragment_Login(Context context){
         this.context = context;
@@ -55,23 +55,54 @@ class Fragment_Login extends Fragment implements View.OnClickListener{
         pass = view.findViewById(R.id.et_password);
 
     }
-    boolean checkUser(String userName,String passWord){
+
+    private void checkUser(String userName,String passWord){
+
+
 
         mAuthen =  FirebaseAuth.getInstance();
         mAuthen.signInWithEmailAndPassword(userName,passWord)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            state = true;
-//                            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
-                        }else{
-                            state = false;
+                    public void onComplete(Task<AuthResult> task) {
+                        if(task.isSuccessful())
+                        {
+                            if(progressDialog.isShowing()){
+                                progressDialog.dismiss();
+                            }
+                            Toast.makeText(context, "เข้าสู่ระบบเสร็จสิ้น", Toast.LENGTH_SHORT).show();
+                            goMainApps();
+
+
+                        }
+                        else
+                        {
+                            if(progressDialog.isShowing()){
+                                progressDialog.dismiss();
+                            }
+
+                            user.setText("");
+                            pass.setText("");
+                            Toast.makeText(getActivity().getApplicationContext(), "ไม่สามารถเข้าสู่ระบบได้", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
 
-        return state;
+    }
+
+    private void hide(View view){
+        view = getActivity().getCurrentFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private void goMainApps(){
+        Intent goMain = new Intent(getActivity()
+                                    .getApplicationContext()
+                                    ,MainActivity.class);
+        getActivity().startActivity(goMain);
+        getActivity().finish();
+
     }
 
     @Override
@@ -79,16 +110,20 @@ class Fragment_Login extends Fragment implements View.OnClickListener{
         switch (v.getId()){
             case R.id.btnLogin:  //if push  button login
                 //get text username password
+                hide(getView());
+
                 username = user.getText().toString().trim();
                 password = pass.getText().toString().trim();
 
-                if(checkUser(username,password)){
-                    Toast.makeText(context, "เข้าสู่ระบบเสร็จสิ้น", Toast.LENGTH_SHORT).show();
-                }else{
-                    user.setText("");
-                    pass.setText("");
-                    Toast.makeText(getActivity().getApplicationContext(), "ไม่สามารถเข้าสู่ระบบได้", Toast.LENGTH_SHORT).show();
+                if(!username.isEmpty() && !password.isEmpty()){
+                    progressDialog = new ProgressDialog(getContext());
+                    progressDialog.setMessage("Loading.......");
+                    progressDialog.show();
+                    checkUser(username,password);
+                }else {
+                    Toast.makeText(context, "กรุณาเช็ค username และ password", Toast.LENGTH_SHORT).show();
                 }
+
                 break;
             case R.id.btnRegister:
 
@@ -98,6 +133,4 @@ class Fragment_Login extends Fragment implements View.OnClickListener{
                 break;
         }
     }
-
-
 }

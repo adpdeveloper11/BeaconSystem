@@ -5,4 +5,17 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!--Login-->
+    <string name="btn_login">Login</string>
+    <string name="btn_register">Register</string>
+    <string name="confirmExit">Do you want to leave the app?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="lblActivityname">ชื่อกิจกรรม </string>
+    <string name="lblDescription">รายระเอียดกิจกรรม</string>
+    <string name="lblTimeStart">วันเริ่มกิจกรรม</string>
+    <string name="lblTimeedit">วันสิ้นสุดกิจกรรม</string>
+    <string name="view_DataAll">ดูข้อมูลกิจกรรมทั้งหมด</string>
+    <!--Login-->
 </resources>
