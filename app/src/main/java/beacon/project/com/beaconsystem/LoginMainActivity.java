@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import beacon.project.com.beaconsystem.Fragment.Fragment_Login;
+
 public class LoginMainActivity extends AppCompatActivity {
 
     private Fragment fragment;
@@ -34,6 +36,5 @@ public class LoginMainActivity extends AppCompatActivity {
         fragment = new Fragment_Login(this);
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.content,fragment).commit();
-
     }
 }

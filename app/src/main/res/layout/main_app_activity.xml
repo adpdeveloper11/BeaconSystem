@@ -116,13 +116,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/bootstrap_brand_primary"
-                        android:text="@string/view_DataAll"
-                        android:textColor="#FFF" />
-
                 </LinearLayout>
 
 

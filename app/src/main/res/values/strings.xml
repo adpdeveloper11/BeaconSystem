@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BeaconSystem</string>
+    <string name="app_name">Activity CPETC</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -17,5 +17,8 @@
     <string name="lblTimeStart">วันเริ่มกิจกรรม</string>
     <string name="lblTimeedit">วันสิ้นสุดกิจกรรม</string>
     <string name="view_DataAll">ดูข้อมูลกิจกรรมทั้งหมด</string>
+    <string name="app_main">หน้าหลัก</string>
+    <string name="app_showdetail">แสดงข้อมูลส่วนตัว</string>
+    <string name="app_logout">ออกจากระบบ</string>
     <!--Login-->
 </resources>

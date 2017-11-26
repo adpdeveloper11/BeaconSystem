@@ -1,18 +1,15 @@
 package beacon.project.com.beaconsystem;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,6 +18,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import beacon.project.com.beaconsystem.Fragment.FragmentHomeApp;
+import beacon.project.com.beaconsystem.Fragment.Fragment_Login;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,6 +35,14 @@ public class MainActivity extends AppCompatActivity
     private int scan_interval_ms = 5000;
     private boolean isScanning = false;
     private String TAG = "Main Activity";
+    private String name,email,path_img;
+    private Bundle bundle = new Bundle();
+    NavigationView navigationView;
+    DrawerLayout drawer;
+    Toolbar toolbar;
+    ActionBarDrawerToggle toggle;
+    ImageView img_user;
+    TextView tv_name,tv_email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,26 +53,48 @@ public class MainActivity extends AppCompatActivity
 
     private void  initMainApps(){
 
+        bundle = getIntent().getExtras();
+        if (bundle != null){
+            name = bundle.getString(Fragment_Login.KEY_NAME);
+            path_img  = bundle.getString(Fragment_Login.KEY_PATH);
+            email = bundle.getString(Fragment_Login.KEY_EMAIL);
+        }
+
         getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentHomeApp()
                 ,"FragmentMainApps").commit();
 
-//      init BLE
-
+        //init BLE
         btManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = btManager.getAdapter();
         scanHandler.post(scanRunnable);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+
+
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
+
+        //set name , email , picture
+        View headerView = navigationView.getHeaderView(0);
+        tv_name   = headerView.findViewById(R.id.tv_nameUser);
+        tv_email  = headerView.findViewById(R.id.tv_emailUser);
+        img_user = headerView.findViewById(R.id.img_user);
+        tv_name.setText(name);
+        tv_email.setText(email);
+        Picasso.with(this).load(path_img).into(img_user);
+
         navigationView.setNavigationItemSelectedListener(this);
+
     }
+
 
     @Override
     protected void onResume() {
@@ -73,7 +108,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        confirmExit();
+        confirmExit("Exit");
     }
 
     @Override
@@ -112,36 +147,46 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_main_app) {
 
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_show_detail) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_logout) {
+            confirmExit("Logout");
 
         }
 
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void confirmExit(){
+    private void confirmExit(final String msg){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Notification");
-        builder.setMessage(getResources().getString(R.string.confirmExit))
+        builder.setMessage("Do you want "+msg+" ?")
         .setCancelable(true)
 
         .setPositiveButton(getResources().getString(R.string.yes)
                             , new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finish();
+                if(msg.equals("Exit")){
+                    finish();
+                }else{
+                    try{
+                        scanHandler.removeCallbacksAndMessages(null);
+
+                        Intent goLogin  = new Intent(MainActivity.this,LoginMainActivity.class);
+                        startActivity(goLogin);
+                        finish();
+
+                    }catch (Exception e){
+                        Log.e(TAG,e.getMessage());
+                    }
+
+                }
+
             }
         })
         .setNegativeButton(getResources().getString(R.string.no),
@@ -153,7 +198,6 @@ public class MainActivity extends AppCompatActivity
         });
         builder.show();
     }
-
 
     private Runnable scanRunnable = new Runnable()
     {

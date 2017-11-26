@@ -21,7 +21,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_fragment);
+        setContentView(R.layout.fragment_login);
         getSupportActionBar().hide();
         init();
 
@@ -30,8 +30,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void init(){
         //init btn
         findViewById(R.id.btnLogin).setOnClickListener(this);
-        findViewById(R.id.btnRegister).setOnClickListener(this);
-
 
         // init edit text
         user = findViewById(R.id.et_username);
@@ -58,9 +56,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(this, "Login Fail.", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.btnRegister:
-                Toast.makeText(this, "Register!!", Toast.LENGTH_SHORT).show();
-                break;
+
         }
     }
 
