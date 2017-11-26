@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import beacon.project.com.beaconsystem.Fragment.Fragment_Login;
+import beacon.project.com.beaconsystem.Fragment.FragmentLogin;
 
 public class LoginMainActivity extends AppCompatActivity {
 
@@ -21,7 +21,7 @@ public class LoginMainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         fragmentManager = getSupportFragmentManager();
-        fragment = new Fragment_Login(this);
+        fragment = new FragmentLogin(this);
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.content,fragment).commit();
 
@@ -33,7 +33,7 @@ public class LoginMainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
 
         fragmentManager = getSupportFragmentManager();
-        fragment = new Fragment_Login(this);
+        fragment = new FragmentLogin(this);
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.content,fragment).commit();
     }

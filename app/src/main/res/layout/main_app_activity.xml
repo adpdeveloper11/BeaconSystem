@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="#FFF"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/imgActivity"
         android:background="@color/bootstrap_brand_info"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="233dp" />
     <LinearLayout
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
@@ -58,7 +60,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
                     <TextView
-                        android:id="@+id/tv_description"
+                        android:id="@+id/tv_detailActivity"
                         android:text="descriptionsdfsdfsdfsdfsdfsdfsdfsdfsfsfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf"
                         android:textSize="18sp"
                         android:layout_width="wrap_content"
@@ -80,7 +82,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_datetime_start"
+                        android:id="@+id/tv_datetimeStart"
                         android:text="date time start"
                         android:textSize="18sp"
                         android:layout_width="wrap_content"
@@ -102,7 +104,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_datetime_end"
+                        android:id="@+id/tv_datetimeEnd"
                         android:text="date time start"
                         android:textSize="18sp"
                         android:layout_width="wrap_content"

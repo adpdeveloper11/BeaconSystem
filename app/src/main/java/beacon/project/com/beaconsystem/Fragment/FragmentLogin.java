@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ import beacon.project.com.beaconsystem.MainActivity;
 import beacon.project.com.beaconsystem.R;
 
 @SuppressLint("ValidFragment")
-public class Fragment_Login extends Fragment implements View.OnClickListener{
+public class FragmentLogin extends Fragment implements View.OnClickListener{
     private EditText user,pass;
     private String username,password;
     Context context;
@@ -38,7 +39,7 @@ public class Fragment_Login extends Fragment implements View.OnClickListener{
     public static String KEY_PATH = "path_extra";
 
 
-    public Fragment_Login(Context context){
+    public FragmentLogin(Context context){
         this.context = context;
     }
 
@@ -148,22 +149,24 @@ public class Fragment_Login extends Fragment implements View.OnClickListener{
         switch (v.getId()){
             case R.id.btnLogin:  //if push  button login
                 //get text username password
-                hide(getView());
+                try{
+//                    hide(getView());
+                    username = user.getText().toString().trim();
+                    password = pass.getText().toString().trim();
 
-                username = user.getText().toString().trim();
-                password = pass.getText().toString().trim();
+                    if(!username.isEmpty() && !password.isEmpty()){
+                        progressDialog = new ProgressDialog(getContext());
+                        progressDialog.setMessage("Loading.......");
+                        progressDialog.show();
+                        checkMember(username,password);
+                    }else {
+                        Toast.makeText(context, "กรุณาเช็ค username และ password", Toast.LENGTH_SHORT).show();
+                    }
 
-                if(!username.isEmpty() && !password.isEmpty()){
-                    progressDialog = new ProgressDialog(getContext());
-                    progressDialog.setMessage("Loading.......");
-                    progressDialog.show();
-                    checkMember(username,password);
-                }else {
-                    Toast.makeText(context, "กรุณาเช็ค username และ password", Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    Log.e("Error Fragment login",e.getMessage());
                 }
-
                 break;
-
         }
     }
 }

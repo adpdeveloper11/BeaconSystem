@@ -25,7 +25,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import beacon.project.com.beaconsystem.Fragment.FragmentHomeApp;
-import beacon.project.com.beaconsystem.Fragment.Fragment_Login;
+import beacon.project.com.beaconsystem.Fragment.FragmentListActivity;
+import beacon.project.com.beaconsystem.Fragment.FragmentShowDataUser;
+import beacon.project.com.beaconsystem.Fragment.FragmentLogin;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,19 +57,19 @@ public class MainActivity extends AppCompatActivity
 
         bundle = getIntent().getExtras();
         if (bundle != null){
-            name = bundle.getString(Fragment_Login.KEY_NAME);
-            path_img  = bundle.getString(Fragment_Login.KEY_PATH);
-            email = bundle.getString(Fragment_Login.KEY_EMAIL);
+            name = bundle.getString(FragmentLogin.KEY_NAME);
+            path_img  = bundle.getString(FragmentLogin.KEY_PATH);
+            email = bundle.getString(FragmentLogin.KEY_EMAIL);
         }
 
-        getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentHomeApp()
+        getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()
                 ,"FragmentMainApps").commit();
 
         //init BLE
         btManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = btManager.getAdapter();
-        scanHandler.post(scanRunnable);
 
+//        scanHandler.post(scanRunnable);   //start scan
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -108,7 +110,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        confirmExit("Exit");
+       FragmentHomeApp fragment = new FragmentHomeApp();
+           getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()).commit();
     }
 
     @Override
@@ -119,7 +124,6 @@ public class MainActivity extends AppCompatActivity
         }catch (Exception e){
             Log.e(TAG,e.getMessage());
         }
-
     }
 
     @Override
@@ -133,7 +137,8 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_exit) {
+            confirmExit("Exit");
             return true;
         }
 
@@ -144,16 +149,17 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_main_app) {
-
-        } else if (id == R.id.nav_show_detail) {
-
-        } else if (id == R.id.nav_logout) {
-            confirmExit("Logout");
-
+        switch (id){
+            case R.id.nav_main_app:
+                getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()).commit();
+                break;
+            case R.id.nav_show_detail:
+                getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentShowDataUser()).commit();
+                break;
+            case R.id.nav_logout:
+                confirmExit("Logout");
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -184,9 +190,7 @@ public class MainActivity extends AppCompatActivity
                     }catch (Exception e){
                         Log.e(TAG,e.getMessage());
                     }
-
                 }
-
             }
         })
         .setNegativeButton(getResources().getString(R.string.no),

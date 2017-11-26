@@ -20,5 +20,6 @@
     <string name="app_main">หน้าหลัก</string>
     <string name="app_showdetail">แสดงข้อมูลส่วนตัว</string>
     <string name="app_logout">ออกจากระบบ</string>
+    <string name="action_exit">Exit App</string>
     <!--Login-->
 </resources>
