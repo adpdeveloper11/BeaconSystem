@@ -26,4 +26,11 @@
     <string name="txt_add_activity">Manage Activity</string>
     <string name="txt_scanble">Manage Beacon</string>
     <!--Login-->
+    <!--dialog-->
+    <string name="txt_nameUser">Name User :</string>
+    <string name="txt_username">Username : </string>
+    <string name="txt_password">Password :</string>
+    <string name="txt_email">Email :</string>
+    <string name="txt_permission">Permission : </string>
+    <!--dialog-->
 </resources>
