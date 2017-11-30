@@ -25,6 +25,7 @@ import com.google.firebase.database.Query;
 
 import java.util.Map;
 
+import beacon.project.com.beaconsystem.AdminActivity;
 import beacon.project.com.beaconsystem.MainActivity;
 import beacon.project.com.beaconsystem.R;
 
@@ -130,17 +131,32 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
     }
 
     private void goMainApps(String nameMember,String pathMember,String perMember,String emailMember){
+        if(perMember.equals("u")){
+            Intent goMain = new Intent(getActivity().getApplicationContext()
+                    ,MainActivity.class);
 
-        Intent goMain = new Intent(getActivity().getApplicationContext()
-                                    ,MainActivity.class);
+            //send data to main app
+            goMain.putExtra(KEY_NAME,nameMember);
+            goMain.putExtra(KEY_EMAIL,emailMember);
+            goMain.putExtra(KEY_PATH,pathMember);
 
-        //send data to main app
-        goMain.putExtra(KEY_NAME,nameMember);
-        goMain.putExtra(KEY_EMAIL,emailMember);
-        goMain.putExtra(KEY_PATH,pathMember);
+            getActivity().startActivity(goMain);
+            getActivity().finish();
 
-        getActivity().startActivity(goMain);
-        getActivity().finish();
+        }else {
+
+            Intent goAdmin = new Intent(getActivity().getApplicationContext()
+                    ,AdminActivity.class);
+
+            //send data to main app
+            goAdmin.putExtra(KEY_NAME,nameMember);
+            goAdmin.putExtra(KEY_EMAIL,emailMember);
+            goAdmin.putExtra(KEY_PATH,pathMember);
+
+            getActivity().startActivity(goAdmin);
+            getActivity().finish();
+        }
+
 
     }
 

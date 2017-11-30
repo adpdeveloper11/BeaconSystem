@@ -21,5 +21,9 @@
     <string name="app_showdetail">แสดงข้อมูลส่วนตัว</string>
     <string name="app_logout">ออกจากระบบ</string>
     <string name="action_exit">Exit App</string>
+    <string name="title_activity_admin">AdminActivity</string>
+    <string name="txt_adduser">Manage User</string>
+    <string name="txt_add_activity">Manage Activity</string>
+    <string name="txt_scanble">Manage Beacon</string>
     <!--Login-->
 </resources>
