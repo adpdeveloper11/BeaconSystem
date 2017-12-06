@@ -1,15 +1,10 @@
 package beacon.project.com.beaconsystem;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -27,11 +22,12 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import beacon.project.com.beaconsystem.Fragment.FragmentAdmin;
+import beacon.project.com.beaconsystem.Fragment.FragmentManageMember;
 import beacon.project.com.beaconsystem.Fragment.FragmentHomeApp;
 import beacon.project.com.beaconsystem.Fragment.FragmentListActivity;
 import beacon.project.com.beaconsystem.Fragment.FragmentLogin;
-import beacon.project.com.beaconsystem.Fragment.FragmentShowDataUser;
+import beacon.project.com.beaconsystem.Fragment.FragmentManageActivity;
+import beacon.project.com.beaconsystem.Fragment.FragmentManageBeacon;
 
 public class AdminActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -87,7 +83,7 @@ public class AdminActivity extends AppCompatActivity
         Picasso.with(this).load(path_img).into(img_user);
 
         navigationView.setNavigationItemSelectedListener(this);
-        setFragment(new FragmentAdmin(),"AdminFragment");
+        setFragment(new FragmentManageMember(),"AdminFragment");
 
     }
     private void setFragment(Fragment fragment,String tag){
@@ -146,13 +142,16 @@ public class AdminActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id){
-            case R.id.nav_main_app:
-                getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()).commit();
+            case R.id.nav_add_user:
+                getSupportFragmentManager().beginTransaction().add(R.id.contentAdmin,new FragmentManageMember()).commit();
                 break;
-            case R.id.nav_show_detail:
-                getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentShowDataUser()).commit();
+            case R.id.nav_activity:
+                getSupportFragmentManager().beginTransaction().add(R.id.contentAdmin,new FragmentManageActivity()).commit();
                 break;
-            case R.id.nav_logout:
+            case R.id.nav_manageBLE:
+                getSupportFragmentManager().beginTransaction().add(R.id.contentAdmin,new FragmentManageBeacon()).commit();
+                break;
+            case R.id.nav_sigout:
                 confirmExit("Logout");
                 break;
         }
@@ -176,8 +175,6 @@ public class AdminActivity extends AppCompatActivity
                                     finish();
                                 }else{
                                     try{
-                                        scanHandler.removeCallbacksAndMessages(null);
-
                                         Intent goLogin  = new Intent(AdminActivity.this,LoginMainActivity.class);
                                         startActivity(goLogin);
                                         finish();

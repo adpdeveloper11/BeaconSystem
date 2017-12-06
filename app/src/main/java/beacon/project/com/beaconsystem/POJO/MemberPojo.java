@@ -5,7 +5,20 @@ package beacon.project.com.beaconsystem.POJO;
  */
 
 public class MemberPojo {
-    private String username,password,nameuser,permission;
+    private String username;
+    private String password;
+    private String nameuser;
+    private String permission;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    private String path;
 
     public MemberPojo() {
 

@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -27,16 +26,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import beacon.project.com.beaconsystem.POJO.Member;
 import beacon.project.com.beaconsystem.R;
 
 
-public class FragmentAdmin extends Fragment implements View.OnClickListener{
+public class FragmentManageMember extends Fragment implements View.OnClickListener{
 
     private FirebaseDatabase database;
     private DatabaseReference mRef;
     private List<String> dMember = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter ;
     private ListView listViewMember;
+
+
+    // value get member user
+    private String username,nameuser,password,email, permission, path;
 
     @Nullable
     @Override
@@ -60,6 +64,7 @@ public class FragmentAdmin extends Fragment implements View.OnClickListener{
     }
 
     private void getMemberList(){
+
         mRef = mRef.child("member");
         Query query =  mRef.limitToFirst(20);
         query.addChildEventListener(new ChildEventListener() {
@@ -101,29 +106,62 @@ public class FragmentAdmin extends Fragment implements View.OnClickListener{
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+
+
             }
         });
     }
 
     private void insertMember(){
-        EditText et_nameUser,et_userName,et_password,et_email,et_per;
+
+        EditText et_nameUser,et_userName,et_password,et_email;
+
+        Spinner permissionSP;
+
+        List<String> perVal = new ArrayList<>();
+        perVal.add("admin");
+        perVal.add("user");
+
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.add_user,null);
             et_nameUser = alertLayout.findViewById(R.id.D_et_nameUser);
             et_userName = alertLayout.findViewById(R.id.D_et_username);
             et_password = alertLayout.findViewById(R.id.D_et_password);
             et_email = alertLayout.findViewById(R.id.D_et_email);
-            et_per = alertLayout.findViewById(R.id.D_et_permission);
+            permissionSP = alertLayout.findViewById(R.id.sp_permission);
 
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,perVal);
+            permissionSP.setAdapter(arrayAdapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Insert Member.");
+
         builder.setView(alertLayout);
 
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getContext(), ""+et_nameUser.getText().toString().trim(), Toast.LENGTH_SHORT).show();
+                if(et_email.length() < 0
+                        || et_nameUser.length() <0
+                        || et_userName.length() < 0
+                        || et_password.length()< 0
+                   )
+                {
+                    Toast.makeText(getContext(), "กรุณากรอกข้อมูลให้ครบ !!!", Toast.LENGTH_SHORT).show();
+
+                }else {
+
+                    path = "http://profile2.chiangraisoftware.com/img/admin.png";
+                    username = et_userName.getText().toString().trim();
+                    nameuser = et_nameUser.getText().toString().trim();
+                    email  = et_email.getText().toString().trim();
+                    password = et_password.getText().toString().trim();
+                    permission = permissionSP.getSelectedItem().toString().substring(0,1);
+                    Member member = new Member(username,nameuser,password,email, permission, path);
+                    inputMember(member);
+
+                }
+
             }
         });
 
@@ -134,6 +172,14 @@ public class FragmentAdmin extends Fragment implements View.OnClickListener{
             }
         });
       builder.show();
+    }
+
+    private void inputMember(Member member){
+
+        DatabaseReference mRef2 = FirebaseDatabase.getInstance().getReference();
+        mRef2 = mRef2.child("member");
+        mRef2.push().setValue(member);
+
     }
 
     @Override

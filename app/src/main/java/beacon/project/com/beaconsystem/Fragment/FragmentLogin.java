@@ -75,6 +75,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                 Map<String,Object> valeRes = (Map<String, Object>) dataSnapshot.getValue();
                 String username = valeRes.get("username").toString();
                 String password = valeRes.get("password").toString();

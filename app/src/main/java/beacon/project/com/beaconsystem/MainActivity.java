@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -236,6 +237,7 @@ public class MainActivity extends AppCompatActivity
         {
             int startByte = 2;
             boolean patternFound = false;
+            getDistance(rssi,72);
             while (startByte <= 5)
             {
                 if (    ((int) scanRecord[startByte + 2] & 0xff) == 0x02 && //Identifies an iBeacon
@@ -266,8 +268,8 @@ public class MainActivity extends AppCompatActivity
 
                 // minor
                 final int minor = (scanRecord[startByte + 22] & 0xff) * 0x100 + (scanRecord[startByte + 23] & 0xff);
-
-                Log.i("BEACON","UUID: " +uuid + "\\nmajor: " +major +"\\nminor" +minor);
+                Toast.makeText(MainActivity.this, "BEACON UUID: " +uuid + "\\nmajor: " +major +"\\nminor" +minor, Toast.LENGTH_SHORT).show();
+//                Log.i("BEACON","UUID: " +uuid + "\\nmajor: " +major +"\\nminor" +minor);
             }
 
         }
@@ -284,4 +286,14 @@ public class MainActivity extends AppCompatActivity
         return new String(hexChars);
     }
 
+    double getDistance(int rssi, int txPower) {
+    /*
+     * RSSI = TxPower - 10 * n * lg(d)
+     * n = 2 (in free space)
+     *
+     * d = 10 ^ ((TxPower - RSSI) / (10 * n))
+     */
+
+        return Math.pow(10d, ((double) txPower - rssi) / (10 * 2));
+    }
 }
