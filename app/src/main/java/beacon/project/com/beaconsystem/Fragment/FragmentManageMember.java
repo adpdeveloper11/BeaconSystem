@@ -55,7 +55,7 @@ public class FragmentManageMember extends Fragment implements View.OnClickListen
         Toast.makeText(getContext(), "Wellcome to Admin.", Toast.LENGTH_SHORT).show();
 
         listViewMember = view.findViewById(R.id.list_user);
-
+        view.findViewById(R.id.btn_add_admin).setOnClickListener(this);
         database = FirebaseDatabase.getInstance();
         mRef = database.getReference();
 
@@ -78,12 +78,7 @@ public class FragmentManageMember extends Fragment implements View.OnClickListen
                 if(arrayAdapter ==null){
                     arrayAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,dMember);
                     listViewMember.setAdapter(arrayAdapter);
-                    listViewMember.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                          insertMember();
-                        }
-                    });
+
                 }
 
             }
@@ -184,6 +179,10 @@ public class FragmentManageMember extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()){
+            case R.id.btn_add_admin:
+                insertMember();
+                break;
+        }
     }
 }

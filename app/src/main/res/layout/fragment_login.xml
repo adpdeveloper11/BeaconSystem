@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/bootstrap_brand_info"
-    android:gravity="center"
-    android:orientation="vertical"
+    android:background="@drawable/backgroundte"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:gravity="center"
+        android:background="#51efefef"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <TextView
         android:layout_width="match_parent"
@@ -21,6 +26,7 @@
             android:layout_width="300dp"
             android:layout_height="228dp"
             android:background="#65edecec"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
             android:gravity="center"
             android:orientation="vertical">
@@ -61,5 +67,5 @@
                 android:textColor="@color/bootstrap_dropdown_divider" />
 
         </LinearLayout>
-
+    </LinearLayout>
 </LinearLayout>

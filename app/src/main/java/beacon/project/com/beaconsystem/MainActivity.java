@@ -9,6 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -39,13 +42,18 @@ public class MainActivity extends AppCompatActivity
     private boolean isScanning = false;
     private String TAG = "Main Activity";
     private String name,email,path_img;
-    private Bundle bundle = new Bundle();
     NavigationView navigationView;
     DrawerLayout drawer;
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
     ImageView img_user;
     TextView tv_name,tv_email;
+
+    public static final String TAG_FRAGMENT_MAINAPP = "main apps";
+    public static final String TAG_FRAGMENT_LOGIN = "login";
+    public static final String TAG_FRAGMENT_MEMBER = "member";
+    public static final String TAG_FRAGMENT_ACTIVITY= "activity";
+    public static final String TAG_FRAGMENT_BEACON = "beacon";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +64,9 @@ public class MainActivity extends AppCompatActivity
 
     private void  initMainApps(){
 
-        bundle = getIntent().getExtras();
-        if (bundle != null){
-            name = bundle.getString(FragmentLogin.KEY_NAME);
-            path_img  = bundle.getString(FragmentLogin.KEY_PATH);
-            email = bundle.getString(FragmentLogin.KEY_EMAIL);
-        }
+        name = "กิจกรรมวิศวกรรมคอมพิวเตอร์";
+        path_img = "http://lst.nectec.or.th/rmutl_dss/img/logo/gallery_20160623151545_9113338.png";
+        email = "";
 
         getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()
                 ,"FragmentMainApps").commit();
@@ -111,10 +116,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-       FragmentHomeApp fragment = new FragmentHomeApp();
-           getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-
-        getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()).commit();
+        replaceFragment(new FragmentListActivity(),null);
     }
 
     @Override
@@ -126,26 +128,26 @@ public class MainActivity extends AppCompatActivity
             Log.e(TAG,e.getMessage());
         }
     }
+    public void replaceFragment(Fragment fragment, Bundle bundle) {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+        if (bundle != null)
+            fragment.setArguments(bundle);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment oldFragment = fragmentManager.findFragmentByTag(fragment.getClass().getName());
 
-        int id = item.getItemId();
-
-        if (id == R.id.action_exit) {
-            confirmExit("Exit");
-            return true;
+        //if oldFragment already exits in fragmentManager use it
+        if (oldFragment != null) {
+            fragment = oldFragment;
         }
 
-        return super.onOptionsItemSelected(item);
-    }
+        fragmentTransaction.replace(R.id.contentMain, fragment, fragment.getClass().getName());
 
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
+        fragmentTransaction.commit();
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -154,13 +156,16 @@ public class MainActivity extends AppCompatActivity
         switch (id){
             case R.id.nav_main_app:
                 getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()).commit();
+                getSupportFragmentManager().beginTransaction().remove(new FragmentListActivity()).commit();
                 break;
             case R.id.nav_show_detail:
-                getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentShowDataUser()).commit();
+                getSupportFragmentManager().beginTransaction().remove(new FragmentListActivity()).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentLogin(this)).commit();
                 break;
-            case R.id.nav_logout:
-                confirmExit("Logout");
+            case R.id.nav_exit:
+                confirmExit("Exit");
                 break;
+
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -237,7 +242,8 @@ public class MainActivity extends AppCompatActivity
         {
             int startByte = 2;
             boolean patternFound = false;
-            getDistance(rssi,72);
+            ;
+            Toast.makeText(MainActivity.this, "Distance "+getDistance(rssi,72), Toast.LENGTH_SHORT).show();
             while (startByte <= 5)
             {
                 if (    ((int) scanRecord[startByte + 2] & 0xff) == 0x02 && //Identifies an iBeacon
@@ -276,6 +282,7 @@ public class MainActivity extends AppCompatActivity
     };
 
     static final char[] hexArray = "0123456789ABCDEF".toCharArray();
+
     private static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {
@@ -287,13 +294,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     double getDistance(int rssi, int txPower) {
-    /*
-     * RSSI = TxPower - 10 * n * lg(d)
-     * n = 2 (in free space)
-     *
-     * d = 10 ^ ((TxPower - RSSI) / (10 * n))
-     */
-
         return Math.pow(10d, ((double) txPower - rssi) / (10 * 2));
     }
 }

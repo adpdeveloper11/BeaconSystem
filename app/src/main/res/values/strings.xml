@@ -33,5 +33,7 @@
     <string name="txt_email">Email :</string>
     <string name="txt_permission">Permission : </string>
     <string name="btn_addActivity">เพิ่มกิจกรรม</string>
+    <string name="app_authen">สำหรับผู้ดูแลระบบ</string>
+    <string name="app_exit">ปิดแอพ</string>
     <!--dialog-->
 </resources>

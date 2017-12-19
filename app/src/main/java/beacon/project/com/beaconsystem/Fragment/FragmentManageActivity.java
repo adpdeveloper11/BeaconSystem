@@ -197,7 +197,7 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                
+
                 activity_name = et_nameActivity.getText().toString().trim();
                 date_issuer = getCurrentTime();
                 detail_activity = et_description.getText().toString().trim();
@@ -237,7 +237,7 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
     }
 
     private String getCurrentTime(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String currentDateandTime = sdf.format(new Date());
         return currentDateandTime;
     }

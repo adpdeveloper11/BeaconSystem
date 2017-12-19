@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -33,8 +35,6 @@ public class AdminActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private Handler scanHandler = new Handler();
-    private int scan_interval_ms = 5000;
-    private boolean isScanning = false;
     private String TAG = "Main Activity";
     private String name,email,path_img;
     private Bundle bundle = new Bundle();
@@ -143,13 +143,16 @@ public class AdminActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id){
             case R.id.nav_add_user:
-                getSupportFragmentManager().beginTransaction().add(R.id.contentAdmin,new FragmentManageMember()).commit();
+//                getSupportFragmentManager().beginTransaction().add(R.id.contentAdmin,new FragmentManageMember()).commit();
+                replaceFragment(new FragmentManageMember(),null);
                 break;
             case R.id.nav_activity:
-                getSupportFragmentManager().beginTransaction().add(R.id.contentAdmin,new FragmentManageActivity()).commit();
+//                getSupportFragmentManager().beginTransaction().add(R.id.contentAdmin,new FragmentManageActivity()).commit();
+                replaceFragment(new FragmentManageActivity(),null);
                 break;
             case R.id.nav_manageBLE:
-                getSupportFragmentManager().beginTransaction().add(R.id.contentAdmin,new FragmentManageBeacon()).commit();
+//                getSupportFragmentManager().beginTransaction().add(R.id.contentAdmin,new FragmentManageBeacon()).commit();
+                replaceFragment(new FragmentManageBeacon(),null);
                 break;
             case R.id.nav_sigout:
                 confirmExit("Logout");
@@ -162,7 +165,7 @@ public class AdminActivity extends AppCompatActivity
 
     private void confirmExit(final String msg){
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(AdminActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Notification");
         builder.setMessage("Do you want "+msg+" ?")
                 .setCancelable(true)
@@ -175,7 +178,7 @@ public class AdminActivity extends AppCompatActivity
                                     finish();
                                 }else{
                                     try{
-                                        Intent goLogin  = new Intent(AdminActivity.this,LoginMainActivity.class);
+                                        Intent goLogin  = new Intent(AdminActivity.this,MainActivity.class);
                                         startActivity(goLogin);
                                         finish();
 
@@ -193,6 +196,27 @@ public class AdminActivity extends AppCompatActivity
                             }
                         });
         builder.show();
+    }
+
+    public void replaceFragment(Fragment fragment, Bundle bundle) {
+
+        if (bundle != null)
+            fragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment oldFragment = fragmentManager.findFragmentByTag(fragment.getClass().getName());
+
+        //if oldFragment already exits in fragmentManager use it
+        if (oldFragment != null) {
+            fragment = oldFragment;
+        }
+
+        fragmentTransaction.replace(R.id.contentAdmin, fragment, fragment.getClass().getName());
+
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
+        fragmentTransaction.commit();
     }
 
 }
