@@ -34,6 +34,7 @@ import beacon.project.com.beaconsystem.R;
  */
 
 public class FragmentListActivity extends Fragment{
+
     RecycleViewOnclickListener mlistener;
     public static String TAG_NAME_ACTIVITY = "nameActivity";
     public static String TAG_DETAIL_ACTIVITY = "detail";

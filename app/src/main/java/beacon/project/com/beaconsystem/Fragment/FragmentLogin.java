@@ -157,8 +157,6 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
             getActivity().startActivity(goAdmin);
             getActivity().finish();
         }
-
-
     }
 
     @Override
@@ -167,7 +165,6 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
             case R.id.btnLogin:  //if push  button login
                 //get text username password
                 try{
-//                    hide(getView());
                     username = user.getText().toString().trim();
                     password = pass.getText().toString().trim();
 

@@ -28,32 +28,47 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+
 import beacon.project.com.beaconsystem.Fragment.FragmentHomeApp;
 import beacon.project.com.beaconsystem.Fragment.FragmentListActivity;
 import beacon.project.com.beaconsystem.Fragment.FragmentShowDataUser;
 import beacon.project.com.beaconsystem.Fragment.FragmentLogin;
+import uk.co.alt236.bluetoothlelib.device.BluetoothLeDevice;
+import uk.co.alt236.bluetoothlelib.device.beacon.BeaconType;
+import uk.co.alt236.bluetoothlelib.device.beacon.BeaconUtils;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    //bluetooth
     private BluetoothManager btManager;
     private BluetoothAdapter btAdapter;
+    private BluetoothLeDevice deviceLE;
+
+
     private Handler scanHandler = new Handler();
     private int scan_interval_ms = 5000;
     private boolean isScanning = false;
     private String TAG = "Main Activity";
+
+
     private String name,email,path_img;
-    NavigationView navigationView;
-    DrawerLayout drawer;
-    Toolbar toolbar;
-    ActionBarDrawerToggle toggle;
-    ImageView img_user;
-    TextView tv_name,tv_email;
+    private int distance;
+
+    //Component
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle toggle;
+    private ImageView img_user;
+    private TextView tv_name,tv_email;
 
     public static final String TAG_FRAGMENT_MAINAPP = "main apps";
     public static final String TAG_FRAGMENT_LOGIN = "login";
     public static final String TAG_FRAGMENT_MEMBER = "member";
     public static final String TAG_FRAGMENT_ACTIVITY= "activity";
     public static final String TAG_FRAGMENT_BEACON = "beacon";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +83,12 @@ public class MainActivity extends AppCompatActivity
         path_img = "http://lst.nectec.or.th/rmutl_dss/img/logo/gallery_20160623151545_9113338.png";
         email = "";
 
-        getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()
-                ,"FragmentMainApps").commit();
 
         //init BLE
         btManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = btManager.getAdapter();
 
-//        scanHandler.post(scanRunnable);   //start scan
+        scanHandler.post(scanRunnable);   //start scan
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -101,6 +114,7 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
+        replaceFragment(new FragmentListActivity(),null);
     }
 
 
@@ -122,12 +136,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         try{
             scanHandler.removeCallbacksAndMessages(null);
         }catch (Exception e){
             Log.e(TAG,e.getMessage());
         }
     }
+
     public void replaceFragment(Fragment fragment, Bundle bundle) {
 
         if (bundle != null)
@@ -155,13 +175,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id){
             case R.id.nav_main_app:
-                getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()).commit();
-                getSupportFragmentManager().beginTransaction().remove(new FragmentListActivity()).commit();
+                    replaceFragment(new FragmentListActivity(),null);
                 break;
+
             case R.id.nav_show_detail:
-                getSupportFragmentManager().beginTransaction().remove(new FragmentListActivity()).commit();
-                getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentLogin(this)).commit();
+                    replaceFragment(new FragmentLogin(this),null);
                 break;
+
             case R.id.nav_exit:
                 confirmExit("Exit");
                 break;
@@ -240,60 +260,32 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord)
         {
-            int startByte = 2;
-            boolean patternFound = false;
-            ;
-            Toast.makeText(MainActivity.this, "Distance "+getDistance(rssi,72), Toast.LENGTH_SHORT).show();
-            while (startByte <= 5)
-            {
-                if (    ((int) scanRecord[startByte + 2] & 0xff) == 0x02 && //Identifies an iBeacon
-                        ((int) scanRecord[startByte + 3] & 0xff) == 0x15)
-                { //Identifies correct data length
-                    patternFound = true;
-                    break;
+            deviceLE = new BluetoothLeDevice(device,rssi,scanRecord,System.currentTimeMillis());
+            String scan = null;
+            String strRSSI = String.valueOf(rssi);
+            String strMac = String.valueOf(device.getAddress());
+            int Rssi_int = Integer.parseInt(strRSSI.substring(1));
+            if(BeaconUtils.getBeaconType(deviceLE) == BeaconType.IBEACON ){
+
+                if (Rssi_int < 77){
+//                    distance = getDistance(rssi,deviceLE.getTimestamp());
+                    Log.e("DATA BLE","rssi = "+strRSSI+" MAC : "+strMac+" Distance = "+getDistance(rssi,-71)
+                            +" rssi int = "+Rssi_int);
+//                    Toast.makeText(MainActivity.this, "rssi = "+strRSSI+" MAC : "+strMac, Toast.LENGTH_SHORT).show();
+
                 }
-                startByte++;
-            }
-
-            if (patternFound)
-            {
-                //Convert to hex String
-                byte[] uuidBytes = new byte[16];
-                System.arraycopy(scanRecord, startByte + 4, uuidBytes, 0, 16);
-                String hexString = bytesToHex(uuidBytes);
-
-                //UUID detection
-                String uuid =  hexString.substring(0,8) + "-" +
-                        hexString.substring(8,12) + "-" +
-                        hexString.substring(12,16) + "-" +
-                        hexString.substring(16,20) + "-" +
-                        hexString.substring(20,32);
-
-                // major
-                final int major = (scanRecord[startByte + 20] & 0xff) * 0x100 + (scanRecord[startByte + 21] & 0xff);
-
-                // minor
-                final int minor = (scanRecord[startByte + 22] & 0xff) * 0x100 + (scanRecord[startByte + 23] & 0xff);
-                Toast.makeText(MainActivity.this, "BEACON UUID: " +uuid + "\\nmajor: " +major +"\\nminor" +minor, Toast.LENGTH_SHORT).show();
-//                Log.i("BEACON","UUID: " +uuid + "\\nmajor: " +major +"\\nminor" +minor);
             }
 
         }
     };
 
-    static final char[] hexArray = "0123456789ABCDEF".toCharArray();
+    private void checkNotification(){
 
-    private static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
     }
 
     double getDistance(int rssi, int txPower) {
-        return Math.pow(10d, ((double) txPower - rssi) / (10 * 2));
+        float distance = (float) Math.pow(10d, ((double) txPower - rssi) / (10 * 2));
+
+        return distance;
     }
 }
