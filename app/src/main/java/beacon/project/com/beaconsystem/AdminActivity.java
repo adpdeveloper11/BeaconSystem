@@ -20,16 +20,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import beacon.project.com.beaconsystem.Fragment.FragmentManageMember;
-import beacon.project.com.beaconsystem.Fragment.FragmentHomeApp;
-import beacon.project.com.beaconsystem.Fragment.FragmentListActivity;
-import beacon.project.com.beaconsystem.Fragment.FragmentLogin;
-import beacon.project.com.beaconsystem.Fragment.FragmentManageActivity;
-import beacon.project.com.beaconsystem.Fragment.FragmentManageBeacon;
+import beacon.project.com.beaconsystem.Fragment.Admin.FragmentManageMember;
+import beacon.project.com.beaconsystem.Fragment.User.FragmentLogin;
+import beacon.project.com.beaconsystem.Fragment.Admin.FragmentManageActivity;
+import beacon.project.com.beaconsystem.Fragment.Admin.FragmentManageBeacon;
 
 public class AdminActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,6 +59,7 @@ public class AdminActivity extends AppCompatActivity
         }
 
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Admin");
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
@@ -72,7 +70,7 @@ public class AdminActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView = findViewById(R.id.nav_view);
-        Toast.makeText(this, ""+email, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, ""+email, Toast.LENGTH_SHORT).show();
         //set name , email , picture
         View headerView = navigationView.getHeaderView(0);
         tv_name   = headerView.findViewById(R.id.tv_nameUseradmin);
@@ -83,7 +81,7 @@ public class AdminActivity extends AppCompatActivity
         Picasso.with(this).load(path_img).into(img_user);
 
         navigationView.setNavigationItemSelectedListener(this);
-        setFragment(new FragmentManageMember(),"AdminFragment");
+        replaceFragment(new FragmentManageMember(),null);
 
     }
     private void setFragment(Fragment fragment,String tag){
@@ -101,10 +99,7 @@ public class AdminActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        FragmentHomeApp fragment = new FragmentHomeApp();
-        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-
-        getSupportFragmentManager().beginTransaction().add(R.id.contentMain,new FragmentListActivity()).commit();
+        replaceFragment(new FragmentManageMember(),null);
     }
 
     @Override

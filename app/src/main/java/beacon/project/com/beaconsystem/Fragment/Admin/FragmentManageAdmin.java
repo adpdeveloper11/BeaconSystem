@@ -1,4 +1,4 @@
-package beacon.project.com.beaconsystem.Fragment;
+package beacon.project.com.beaconsystem.Fragment.Admin;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

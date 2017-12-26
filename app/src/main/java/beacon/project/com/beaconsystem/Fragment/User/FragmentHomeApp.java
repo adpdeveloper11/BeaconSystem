@@ -1,8 +1,9 @@
-package beacon.project.com.beaconsystem.Fragment;
+package beacon.project.com.beaconsystem.Fragment.User;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,12 @@ public class FragmentHomeApp extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_app_activity
                 ,container,false);
-                initInstance(view);
+        try{
+            initInstance(view);
+        }catch (Exception e){
+            Log.e("Error at Homeapp",e.getMessage());
+        }
+
         return view;
     }
 

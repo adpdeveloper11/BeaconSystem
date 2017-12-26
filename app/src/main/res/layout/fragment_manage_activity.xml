@@ -15,11 +15,11 @@
     <Button
         android:id="@+id/btn_addActivity"
         android:text="@string/btn_addActivity"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_width="200dp"
+        android:textColor="#FFF"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/bootstrap_brand_success"
         android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-package beacon.project.com.beaconsystem.Fragment;
+package beacon.project.com.beaconsystem.Fragment.Admin;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -6,9 +6,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -46,12 +48,14 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
     private ArrayAdapter<String> adapter;
     private String dateDisplay;
 
-    String activity_name;
-    String date_issuer;
-    String detail_activity;
-    String datetime_start;
-    String datetime_end;
-    String mac_beacon;
+    private String activity_name;
+    private String date_issuer;
+    private String detail_activity;
+    private String datetime_start;
+    private String datetime_end;
+    private String mac_beacon;
+    private String select_Ble;
+    private ArrayAdapter<String> arrayAdapter;
 
     @Nullable
     @Override
@@ -60,7 +64,15 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_manage_activity,container,false);
+
+        try{
+
             init(view);
+
+        }catch (Exception e){
+            Log.e("Error",e.getMessage());
+        }
+
 
         return view;
     }
@@ -73,6 +85,7 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
         view.findViewById(R.id.btn_addActivity).setOnClickListener(this);
 
         getDataActivity();
+
     }
 
    private void getDataActivity(){
@@ -119,16 +132,16 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
 
    }
 
+
     private void insertAlert(){
+
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+        mRef = mRef.child("Beacon");
 
         EditText et_nameActivity,et_description;
         TextView tv_timeStart,tv_timeEnd;
         Spinner spinner;
 
-        List<String> perVal = new ArrayList<>();
-
-        perVal.add("BE1");
-        perVal.add("BE2");
 
         LayoutInflater inflater = getLayoutInflater();
         View v = inflater.inflate(R.layout.add_activity,null);
@@ -138,6 +151,46 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
         tv_timeEnd = v.findViewById(R.id.tv_datetimeEnd_alert);
         spinner = v.findViewById(R.id.sp_ble);
 
+        List<String> mac = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        Query query = mRef.limitToLast(10);
+        query.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Map<String,Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                String nameBeacon = data.get("macAddress").toString();
+                String name = data.get("name").toString();
+
+                mac.add(nameBeacon);
+                names.add(name);
+                arrayAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,names);
+                spinner.setAdapter(arrayAdapter);
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         tv_timeStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,6 +212,18 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
                     }
                 }, yy, mm, dd);
                 datePicker.show();
+
+            }
+        });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                select_Ble = mac.get(position);
+//                Toast.makeText(getContext(), ""+select_Ble, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -186,10 +251,7 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
         });
 
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,perVal);
-        spinner.setAdapter(arrayAdapter);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Insert Activity.");
 
         builder.setView(v);
@@ -198,12 +260,13 @@ public class FragmentManageActivity extends Fragment implements View.OnClickList
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+                Toast.makeText(getContext(), "Data Select "+select_Ble, Toast.LENGTH_SHORT).show();
                 activity_name = et_nameActivity.getText().toString().trim();
                 date_issuer = getCurrentTime();
                 detail_activity = et_description.getText().toString().trim();
                 datetime_start = tv_timeStart.getText().toString();
                 datetime_end  =  tv_timeEnd.getText().toString();
-                mac_beacon = spinner.getSelectedItem().toString();
+                mac_beacon = select_Ble;
                 if(activity_name.isEmpty() || date_issuer.isEmpty()
                         || detail_activity.isEmpty()
                         || datetime_start.isEmpty()

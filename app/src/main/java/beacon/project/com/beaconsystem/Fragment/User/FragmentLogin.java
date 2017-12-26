@@ -1,4 +1,4 @@
-package beacon.project.com.beaconsystem.Fragment;
+package beacon.project.com.beaconsystem.Fragment.User;
 
 
 import android.annotation.SuppressLint;
@@ -52,7 +52,12 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_login,
                 container,
                 false);
-        initInstance(view);
+        try{
+            initInstance(view);
+        }catch (Exception e){
+            Log.e("Error ",e.getMessage());
+        }
+
         return view;
     }
 
@@ -62,7 +67,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
         // init edit text
         user = view.findViewById(R.id.et_username);
         pass = view.findViewById(R.id.et_password);
-//        checkMember("admin","admin");
+
     }
 
     private void checkMember(final String userCheck, final String passCheck){

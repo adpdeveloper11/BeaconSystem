@@ -1,10 +1,11 @@
-package beacon.project.com.beaconsystem.Fragment;
+package beacon.project.com.beaconsystem.Fragment.Admin;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,12 @@ public class FragmentManageMember extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view  = inflater.inflate(R.layout.fragment_admin_main,container,false);
-        init(view);
+        try{
+            init(view);
+        }catch (Exception e){
+            Log.e("Error at Member",e.getMessage());
+        }
+
         return view;
     }
 

@@ -19,21 +19,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-
-import beacon.project.com.beaconsystem.Fragment.FragmentHomeApp;
-import beacon.project.com.beaconsystem.Fragment.FragmentListActivity;
-import beacon.project.com.beaconsystem.Fragment.FragmentShowDataUser;
-import beacon.project.com.beaconsystem.Fragment.FragmentLogin;
+import beacon.project.com.beaconsystem.Fragment.User.FragmentListActivity;
+import beacon.project.com.beaconsystem.Fragment.User.FragmentLogin;
 import uk.co.alt236.bluetoothlelib.device.BluetoothLeDevice;
 import uk.co.alt236.bluetoothlelib.device.beacon.BeaconType;
 import uk.co.alt236.bluetoothlelib.device.beacon.BeaconUtils;
@@ -63,13 +57,6 @@ public class MainActivity extends AppCompatActivity
     private ImageView img_user;
     private TextView tv_name,tv_email;
 
-    public static final String TAG_FRAGMENT_MAINAPP = "main apps";
-    public static final String TAG_FRAGMENT_LOGIN = "login";
-    public static final String TAG_FRAGMENT_MEMBER = "member";
-    public static final String TAG_FRAGMENT_ACTIVITY= "activity";
-    public static final String TAG_FRAGMENT_BEACON = "beacon";
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +78,7 @@ public class MainActivity extends AppCompatActivity
         scanHandler.post(scanRunnable);   //start scan
 
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("กิจกรรมวิศวกรรมคอมพิวเตอร์");
         setSupportActionBar(toolbar);
 
 

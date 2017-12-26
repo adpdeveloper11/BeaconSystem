@@ -1,4 +1,4 @@
-package beacon.project.com.beaconsystem.Fragment;
+package beacon.project.com.beaconsystem.Fragment.Admin;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -77,7 +77,12 @@ public class FragmentManageBeacon extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_beacon,container,false);
-        init(view);
+        try{
+            init(view);
+        }catch (Exception e){
+            Log.e("Error at Beacon ",e.getMessage());
+        }
+
         return view;
     }
 
@@ -143,11 +148,12 @@ public class FragmentManageBeacon extends Fragment implements View.OnClickListen
         builderSingle.setIcon(R.drawable.ic_bluetooth_searching);
         builderSingle.setTitle("เลือกอุปกรณ์");
         ProgressBar progressBar = new ProgressBar(context);
+
         builderSingle.setView(progressBar);
-        TextView textView = new TextView(context);
-        textView.setText("กดเลือกเพื่อบันทึก iBeacon");
-        textView.setGravity(Gravity.CENTER);
-        builderSingle.setView(textView);
+//        TextView textView = new TextView(context);
+//        textView.setText("กดเลือกเพื่อบันทึก iBeacon");
+//        textView.setGravity(Gravity.CENTER);
+//        builderSingle.setView(textView);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 getContext(),
